@@ -5,6 +5,8 @@ import threading
 import time
 
 import db_wrapper
+import feh_runner
+import x_wrapper
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -17,12 +19,15 @@ def image_finder(db_filename, init_script_filename, stop_event):
         # Need to actually ipmlement this
 
 def main():
-    if len(sys.argv) < 3:
-        print >>sys.stderr, 'Usage: %s <db_filename> <init_script_filename>' % sys.argv[0]
-        return -1
 
-    db_filename = sys.argv[1]
-    init_script_filename = sys.argv[2]
+    db_filename = 'piframe.db'
+    init_script_filename = 'piframe.sql'
+
+    feh = feh_runner.FehRunner()
+    xserver= x_wrapper.XServer()
+    
+    xserver.start()
+
     stop_event = threading.Event()
     image_finder_thread = threading.Thread(target=image_finder, args=(db_filename, init_script_filename, stop_event))
     image_finder_thread.start()
@@ -35,12 +40,15 @@ def main():
                 images = db.get_n_images_from_folder(5, folder_id)
                 for image in images:
                     _logger.debug('Displaying "%s"', image.path)
+                    feh.next_image(image.path)
+                    time.sleep(5)
                 db.add_displayed_images([i.image_id for i in images])
             else:
                 _logger.info('Clearing displayed images')
                 db.clear_displayed_images()
     except KeyboardInterrupt:
         _logger.debug('Waiting for finder thread to exit...')
+        feh.stop()
         stop_event.set()
         _logger.debug('Exiting!')
 
