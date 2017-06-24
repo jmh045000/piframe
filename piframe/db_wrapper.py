@@ -33,7 +33,7 @@ class DbWrapper(object):
 
     @property
     def available_folder(self):
-        c = self.read_only_cursor()
+        c = self.read_only_cursor
         c.execute('''SELECT folder_id FROM undisplayed_folders ORDER BY random() LIMIT 1''')
         row = c.fetchone()
         if row:
@@ -43,7 +43,7 @@ class DbWrapper(object):
 
     @property
     def available_image(self):
-        c = self.read_only_cursor()
+        c = self.read_only_cursor
         c.execute('''SELECT * FROM undisplayed_images ORDER BY random() LIMIT 1''')
         row = c.fetchone()
         if row:
@@ -55,12 +55,7 @@ class DbWrapper(object):
         c = self.read_only_cursor
         c.execute('''SELECT * FROM undisplayed_images WHERE folder_id=:folder_id ORDER BY random() LIMIT :n''',
                 {'folder_id': folder_id, 'n': n})
-        while True:
-            row = c.fetchone()
-            if row:
-                yield Image(row)
-            else:
-                break
+        return [ Image(row) for row in c.fetchall() ]
 
     def add_image(self, path):
         path = os.path.abspath(path)
