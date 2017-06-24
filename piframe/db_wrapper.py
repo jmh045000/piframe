@@ -95,3 +95,7 @@ class DbWrapper(object):
             for image_id in image_ids:
                 c.execute('''INSERT INTO displayed_images (image_id) VALUES (?)''', (image_id,))
 
+    def clear_displayed_images(self):
+        with self.cursor as c:
+            c.execute('''DELETE FROM displayed_images''')
+
