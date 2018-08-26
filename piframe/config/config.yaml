@@ -6,4 +6,6 @@ extensions:
   - "jpg"
   - "png"
 feh_options:
-  - "--full-screen"
+  - "-Z"
+  - "--geometry"
+  - "320x240"

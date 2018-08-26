@@ -46,7 +46,7 @@ def main():
 
     _logger.debug(f"Configuration:\n{configuration}")
 
-    feh = feh_runner.FehRunner(configuration["feh_options"])
+    feh = feh_runner.FehRunner(configuration.get("feh_options", []))
     if configuration.get("start_x", True):
         xserver = x_wrapper.XServer()
         xserver.start()
