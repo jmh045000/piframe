@@ -18,10 +18,11 @@ class Image(object):
 
 
 class DbWrapper(object):
-    def __init__(self, db_filename, init_script_filename):
+    def __init__(self, db_filename, init_script_filename=None):
         self.__conn = sqlite3.connect(db_filename)
-        with open(init_script_filename) as script:
-            self.__conn.executescript(script.read())
+        if init_script_filename:
+            with open(init_script_filename) as script:
+                self.__conn.executescript(script.read())
 
     @property
     @contextlib.contextmanager
@@ -100,6 +101,14 @@ class DbWrapper(object):
                     """INSERT INTO displayed_images (image_id) VALUES (?)""",
                     (image_id,),
                 )
+
+    def remove_image(self, image):
+        with self.cursor as c:
+            c.execute(
+                """DELETE FROM images WHERE image_id=:image_id""",
+                {"image_id": image.image_id},
+            )
+
 
     def clear_displayed_images(self):
         with self.cursor as c:

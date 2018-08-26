@@ -7,9 +7,9 @@ import time
 class FehRunner(object):
     blackhole = open("/dev/null", "w")
 
-    def __init__(self):
+    def __init__(self, feh_options):
         self.proc = None
-        self.command_base = ["feh", "--full-screen"]
+        self.command_base = ["feh"] + feh_options
         self.command_env = {
             "XAUTHORITY": os.path.expanduser("~/.XAuthority"),
             "DISPLAY": ":0.0",

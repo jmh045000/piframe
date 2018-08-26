@@ -1,0 +1,9 @@
+start_x: false
+mountpoints:
+  - "/media"
+  - "/mnt"
+extensions:
+  - "jpg"
+  - "png"
+feh_options:
+  - "--full-screen"
