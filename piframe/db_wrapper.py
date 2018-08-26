@@ -6,6 +6,7 @@ import sqlite3
 
 _logger = logging.getLogger(__name__)
 
+
 class Image(object):
     def __init__(self, row):
         self.image_id = row[0]
@@ -14,6 +15,7 @@ class Image(object):
 
     def __str__(self):
         return self.path
+
 
 class DbWrapper(object):
     def __init__(self, db_filename, init_script_filename):
@@ -34,7 +36,9 @@ class DbWrapper(object):
     @property
     def available_folder(self):
         c = self.read_only_cursor
-        c.execute('''SELECT folder_id FROM undisplayed_folders ORDER BY random() LIMIT 1''')
+        c.execute(
+            """SELECT folder_id FROM undisplayed_folders ORDER BY random() LIMIT 1"""
+        )
         row = c.fetchone()
         if row:
             return row[0]
@@ -44,7 +48,7 @@ class DbWrapper(object):
     @property
     def available_image(self):
         c = self.read_only_cursor
-        c.execute('''SELECT * FROM undisplayed_images ORDER BY random() LIMIT 1''')
+        c.execute("""SELECT * FROM undisplayed_images ORDER BY random() LIMIT 1""")
         row = c.fetchone()
         if row:
             return Image(row)
@@ -53,19 +57,22 @@ class DbWrapper(object):
 
     def get_n_images_from_folder(self, n, folder_id):
         c = self.read_only_cursor
-        c.execute('''SELECT * FROM undisplayed_images WHERE folder_id=:folder_id ORDER BY random() LIMIT :n''',
-                {'folder_id': folder_id, 'n': n})
-        return [ Image(row) for row in c.fetchall() ]
+        c.execute(
+            """SELECT * FROM undisplayed_images WHERE folder_id=:folder_id ORDER BY random() LIMIT :n""",
+            {"folder_id": folder_id, "n": n},
+        )
+        return [Image(row) for row in c.fetchall()]
 
     def add_image(self, path):
         path = os.path.abspath(path)
         if not os.path.exists(path):
-            raise ValueError('path must exist')
+            raise ValueError("path must exist")
         with self.cursor as c:
             try:
-                c.execute('''INSERT INTO images (path, folder_id) VALUES (:path, :folder_id)''', {
-                    'path': path,
-                    'folder_id': hash(os.path.dirname(path))})
+                c.execute(
+                    """INSERT INTO images (path, folder_id) VALUES (:path, :folder_id)""",
+                    {"path": path, "folder_id": hash(os.path.dirname(path))},
+                )
             except sqlite3.IntegrityError:
                 _logger.debug('"%s" already exists in DB', path)
 
@@ -74,9 +81,10 @@ class DbWrapper(object):
         with self.cursor as c:
             for path in paths:
                 try:
-                    c.execute('''INSERT INTO images (path, folder_id) VALUES (:path, :folder_id)''', {
-                        'path': path,
-                        'folder_id': hash(os.path.dirname(path))})
+                    c.execute(
+                        """INSERT INTO images (path, folder_id) VALUES (:path, :folder_id)""",
+                        {"path": path, "folder_id": hash(os.path.dirname(path))},
+                    )
                 except sqlite3.IntegrityError:
                     _logger.debug('"%s" already exists in DB', path)
 
@@ -84,13 +92,15 @@ class DbWrapper(object):
         try:
             iter(image_ids)
         except TypeError:
-            raise TypeError('image_ids must be an iterable')
-        
+            raise TypeError("image_ids must be an iterable")
+
         with self.cursor as c:
             for image_id in image_ids:
-                c.execute('''INSERT INTO displayed_images (image_id) VALUES (?)''', (image_id,))
+                c.execute(
+                    """INSERT INTO displayed_images (image_id) VALUES (?)""",
+                    (image_id,),
+                )
 
     def clear_displayed_images(self):
         with self.cursor as c:
-            c.execute('''DELETE FROM displayed_images''')
-
+            c.execute("""DELETE FROM displayed_images""")

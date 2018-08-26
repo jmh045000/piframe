@@ -3,15 +3,17 @@ import os
 import subprocess
 import time
 
+
 class FehRunner(object):
-    blackhole = open('/dev/null', 'w')
+    blackhole = open("/dev/null", "w")
+
     def __init__(self):
         self.proc = None
-        self.command_base = [ 'feh', '--full-screen' ]
+        self.command_base = ["feh", "--full-screen"]
         self.command_env = {
-            'XAUTHORITY': os.path.expanduser('~/.XAuthority'),
-            'DISPLAY': ':0.0',
-            'HOME': os.path.expanduser('~')
+            "XAUTHORITY": os.path.expanduser("~/.XAuthority"),
+            "DISPLAY": ":0.0",
+            "HOME": os.path.expanduser("~"),
         }
 
     @property
@@ -23,10 +25,11 @@ class FehRunner(object):
         if self.running:
             old_proc = self.proc
         self.proc = subprocess.Popen(
-                self.command_base + [image_path],
-                env=self.command_env,
-                stdout=self.blackhole,
-                stderr=self.blackhole)
+            self.command_base + [image_path],
+            env=self.command_env,
+            stdout=self.blackhole,
+            stderr=self.blackhole,
+        )
         time.sleep(2)
         if old_proc:
             old_proc.kill()

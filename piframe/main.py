@@ -12,24 +12,31 @@ logging.basicConfig(level=logging.DEBUG)
 
 _logger = logging.getLogger(__name__)
 
+
 def image_finder(db_filename, init_script_filename, stop_event):
     db = db_wrapper.DbWrapper(db_filename, init_script_filename)
     while not stop_event.is_set():
         time.sleep(1)
         # Need to actually ipmlement this
 
+
 def main():
 
-    db_filename = 'piframe.db'
-    init_script_filename = 'piframe.sql'
+    config_directory = os.path.join(os.path.dirname(__file__), "config")
+
+    db_filename = "/tmp/piframe.db"
+    init_script_filename = os.path.join(config_directory, "piframe.sql")
+    config_filename = os.path.join(config_directory, "config.yaml")
 
     feh = feh_runner.FehRunner()
-    xserver= x_wrapper.XServer()
-    
+    xserver = x_wrapper.XServer()
+
     xserver.start()
 
     stop_event = threading.Event()
-    image_finder_thread = threading.Thread(target=image_finder, args=(db_filename, init_script_filename, stop_event))
+    image_finder_thread = threading.Thread(
+        target=image_finder, args=(db_filename, init_script_filename, stop_event)
+    )
     image_finder_thread.start()
 
     db = db_wrapper.DbWrapper(db_filename, init_script_filename)
@@ -44,19 +51,16 @@ def main():
                     time.sleep(5)
                 db.add_displayed_images([i.image_id for i in images])
             else:
-                _logger.info('Clearing displayed images')
+                _logger.info("Clearing displayed images")
                 db.clear_displayed_images()
     except KeyboardInterrupt:
-        _logger.debug('Waiting for finder thread to exit...')
+        _logger.debug("Waiting for finder thread to exit...")
         feh.stop()
         stop_event.set()
-        _logger.debug('Exiting!')
+        _logger.debug("Exiting!")
 
     return 0
 
-if __name__ == '__main__':
-    try:
-        sys.exit(main())
-    except Exception as e:
-        RUNNING = False
-        raise
+
+if __name__ == "__main__":
+    sys.exit(main())
