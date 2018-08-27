@@ -27,7 +27,7 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     packages=find_packages("piframe"),
-    install_requires=["psutil", "pyyaml"],
+    install_requires=["pyyaml"],
     package_data={"piframe": ["config"]},
     entry_points={"console_scripts": ["piframe=piframe.main:main"]},
 )
