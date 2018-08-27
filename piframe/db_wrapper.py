@@ -64,30 +64,18 @@ class DbWrapper(object):
         )
         return [Image(row) for row in c.fetchall()]
 
-    def add_image(self, path):
-        path = os.path.abspath(path)
-        if not os.path.exists(path):
-            raise ValueError("path must exist")
-        with self.cursor as c:
-            try:
-                c.execute(
-                    """INSERT INTO images (path, folder_id) VALUES (:path, :folder_id)""",
-                    {"path": path, "folder_id": hash(os.path.dirname(path))},
-                )
-            except sqlite3.IntegrityError:
-                _logger.debug('"%s" already exists in DB', path)
-
     def add_images(self, *paths):
         paths = [os.path.abspath(p) for p in paths if os.path.exists(p)]
         with self.cursor as c:
             for path in paths:
-                try:
-                    c.execute(
-                        """INSERT INTO images (path, folder_id) VALUES (:path, :folder_id)""",
-                        {"path": path, "folder_id": hash(os.path.dirname(path))},
-                    )
-                except sqlite3.IntegrityError:
-                    _logger.debug('"%s" already exists in DB', path)
+                c.execute(
+                    """
+                    INSERT OR IGNORE INTO
+                    images (path, folder_id)
+                    VALUES (:path, :folder_id)
+                    """,
+                    {"path": path, "folder_id": hash(os.path.dirname(path))},
+                )
 
     def add_displayed_images(self, image_ids):
         try:

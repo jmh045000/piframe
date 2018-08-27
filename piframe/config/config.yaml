@@ -1,4 +1,5 @@
 start_x: false
+image_time: 2
 mountpoints:
   - "/media"
   - "/mnt"
@@ -8,4 +9,4 @@ extensions:
 feh_options:
   - "-Z"
   - "--geometry"
-  - "320x240"
+  - "640x480"
