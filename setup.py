@@ -28,6 +28,6 @@ setup(
     ],
     packages=["piframe"],
     install_requires=["pyyaml"],
-    package_data={"piframe": ["config"]},
+    package_data={"piframe": ["config", "version.txt"]},
     entry_points={"console_scripts": ["piframe=piframe.main:main", "piframe-firstrun=piframe.firstrun:main"]},
 )

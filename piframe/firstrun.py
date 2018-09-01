@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 def main():
-    required_packages = ["xorg", "feh"]
+    required_packages = ["xorg", "feh", "pmount"]
     print("Running apt-get to install necessary packages")
     print("Packages: {}".format(",".join(required_packages)))
 
