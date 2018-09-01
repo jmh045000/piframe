@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 
 with open(os.path.join(here, "piframe", "version.txt")) as f:
-    version = f.read()
+    version = f.read().strip()
 
 setup(
     name="piframe",
@@ -28,6 +28,6 @@ setup(
     ],
     packages=["piframe"],
     install_requires=["pyyaml"],
-    package_data={"piframe": ["config", "version.txt"]},
+    package_data={"piframe": ["config/config.yaml", "config/piframe.sql", "version.txt"]},
     entry_points={"console_scripts": ["piframe=piframe.main:main", "piframe-firstrun=piframe.firstrun:main"]},
 )
