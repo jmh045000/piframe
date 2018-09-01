@@ -97,7 +97,6 @@ class DbWrapper(object):
                 {"image_id": image.image_id},
             )
 
-
     def clear_displayed_images(self):
         with self.cursor as c:
             c.execute("""DELETE FROM displayed_images""")

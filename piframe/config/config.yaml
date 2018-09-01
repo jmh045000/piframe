@@ -1,5 +1,5 @@
-start_x: false
-image_time: 2
+start_x: true
+image_time: 6.5
 mountpoints:
   - "/media"
   - "/mnt"
@@ -7,6 +7,7 @@ extensions:
   - "jpg"
   - "png"
 feh_options:
-  - "-Z"
-  - "--geometry"
-  - "640x480"
+  - "--autozoom"
+  - "--borderless"
+  - "--full-screen"
+  - "--auto-rotate"
